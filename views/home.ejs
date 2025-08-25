@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Top bar -->
+  <div class="top-bar">
+    <a href="/deleteaccount" class="btn delete">Delete Account</a>
+    <a href="/logout" class="btn logout">Logout</a>
+  </div>
+
+  <h1 class="center-text">Upload Documents</h1>
+
+  <!-- Upload Section -->
+  <div class="upload-container">
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <label for="file-upload" class="upload-label">
+        <div class="upload-icon">+</div>
+      </label>
+      <input id="file-upload" type="file" name="document" hidden>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+</body>
+</html>
