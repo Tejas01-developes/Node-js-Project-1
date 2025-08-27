@@ -11,6 +11,7 @@ import cors from 'cors';
 import xss from 'xss-clean'
 import hpp from 'hpp';
 import mongoSanitize from 'express-mongo-sanitize'
+import bodyParser from 'body-parser';
 
 
 dotenv.config()
@@ -37,6 +38,7 @@ const limiter=ratelimit({
     message:"to many request from this ip please try again later"
 })
 app.use(limiter);
+app.use(bodyParser.urlencoded());
 
 // app.use(hpp());  
 // app.use(mongoSanitize());
@@ -47,7 +49,7 @@ app.use(limiter);
 app.use(express.static(path.resolve(__dirname,'public')))
 app.set('view engine','ejs')
 app.set('views',path.resolve('views'));
-// app.use(xss());
+// app.use(xss())
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 // app.use(mongoSanitize({
