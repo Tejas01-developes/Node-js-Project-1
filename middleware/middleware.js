@@ -20,6 +20,7 @@ const refreshtoken=req.cookies.refreshtoken;
     try{
     const avalible=jwt.verify(accesstoken,process.env.ACCESSSECRET);
     req.user=avalible;
+    req.role=avalible.role;
         return next();
     
     
@@ -27,7 +28,7 @@ const refreshtoken=req.cookies.refreshtoken;
 
         console.log("accesstoken expired or invalid",err)
 
-
+    }
         if(!refreshtoken){
            return resp.status(400).json({message:"refresh token missing"})
         }
@@ -35,7 +36,9 @@ const refreshtoken=req.cookies.refreshtoken;
         const refreshavalible=jwt.verify(refreshtoken,process.env.REFRESHSECRET);
         
         const newaccesstoken=jwt.sign(
-            {id:refreshavalible._id},
+            {id:refreshavalible._id,
+                role:refreshavalible.role
+            },
             process.env.ACCESSSECRET,
             {expiresIn:"15m"}
         )
@@ -52,20 +55,24 @@ return next();
 
     }catch(err){
 console.log("refresh token invalid",err);
-return resp.status(400).json({message:"invalid refresh token log in again"})
+ resp.status(400).json({message:"invalid refresh token log in again"})
 
     }
+     const isAdmin=(req,resp,next)=>{
+        if(req.role !== "ADMIN"){
+            resp.status(400).send("only admin is allowed")
+        }
+        resp.status(200).send("Admin welcome")
+        
+        }
+        next();
 
 
-    }
+    
 
-const isAdmin=(req,resp,next)=>{
-if(req.role !== "ADMIN"){
-    resp.status(400).send("only admin is allowed")
-}
-resp.status(200).send("Admin welcome")
-
-}
-next();
 }
 export default verifytoken;
+
+
+
+    

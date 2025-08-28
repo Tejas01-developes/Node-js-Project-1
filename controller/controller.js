@@ -76,9 +76,9 @@ export const login=async(req,resp)=>{
         return   resp.status(400).send("provided credincials are not correct")
 
     }
-const accesstoken=json.sign({id:exist._id},process.env.ACCESSSECRET,{expiresIn:"15m"});
+const accesstoken=json.sign({id:exist._id,role:exist.role},process.env.ACCESSSECRET,{expiresIn:"15m"});
 exist.access=accesstoken
-const refreshtoken=json.sign({id:exist._id},process.env.REFRESHSECRET,{expiresIn:"7d"})
+const refreshtoken=json.sign({id:exist._id,role:exist.role},process.env.REFRESHSECRET,{expiresIn:"7d"})
 exist.refreshtoken=refreshtoken;
 
 resp.cookie("token",accesstoken,{
