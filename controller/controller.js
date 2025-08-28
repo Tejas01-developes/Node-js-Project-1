@@ -44,7 +44,7 @@ if(!username || !email || !password){
 const exist =await schema.findOne({email});
 
 if(exist){
-    return  resp.status(400).json({message:"email is already registered"})
+    return  resp.status(400).send("email is already registered")
 }
 
 const hash=await bcrypt.hash(password,10);
@@ -57,9 +57,7 @@ resp.redirect('/login')
 
 }catch(err){
 
-    return resp.status(400).json({message:"entire registration process failed"});
-
-
+    return resp.status(400).send("entire registration process failed");
 }
 }
 
@@ -75,7 +73,7 @@ export const login=async(req,resp)=>{
     const exist=await schema.findOne({email});
     if  (!exist ||  !await bcrypt.compare(password,exist.password)){
 
-        return   resp.status(400).json({message:"provided credincials are not correct"})
+        return   resp.status(400).send("provided credincials are not correct")
 
     }
 const accesstoken=json.sign({id:exist._id},process.env.ACCESSSECRET,{expiresIn:"15m"});
@@ -153,7 +151,7 @@ const resetlink=`http://${req.headers.host}/reset/${token}`;
 await sendemails.sendmail(email,`reset link has been sent to your email ${resetlink}` )
 }catch(err){
 console.log(err)
-return resp.status(400).json({message:"resent token generetion failed"}) 
+return resp.status(400).send("resent token generetion failed") 
 }
 }
 
@@ -189,7 +187,7 @@ const {token}=req.params;
 const user=await schema.findOne({resetExpiry:{$gt:Date.now()}});
 
 if(!user || !bcrypt.compare(token, resettoken)){
-    return resp.status(400).json({ message: "Invalid or expired token" });
+    return resp.status(400).send( "Invalid or expired token" );
 }
 resp.render('reset',{token});
 
@@ -221,7 +219,7 @@ const{token}=req.params;
 const{password}=req.body;
 const check=await schema.findOne({resettoken:token,tokenExpiry:{$gt:Date.now()}});
 if(!check){
-    return resp.status(400).json({message:"token is not orignal"})
+   return  resp.status(400).send("token is not orignal")
     }
     const newpass=await bcrypt.hash(password,10);
     check.password=newpass;
@@ -231,7 +229,7 @@ if(!check){
     resp.redirect("/login")
     }catch(err){
 console.log(err)
-return resp.status(400).json({message:"forgot password failed"})
+return resp.status(400).send("forgot password failed")
 
     }
 

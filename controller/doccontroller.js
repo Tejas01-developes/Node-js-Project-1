@@ -8,7 +8,7 @@ dotenv.config();
 export const uploaddocument=(req,resp)=>{
 try{
     if(!req.files){
-        resp.status(400).json({message:"no file uploaded"})
+        resp.status(400).send("no file uploaded")
     }
 
     const documents=new Document({
@@ -20,7 +20,7 @@ try{
 documents.save();
 }catch(err){
     console.log(err)
-   return resp.status(400).json({message:"upload document failed"})
+   return resp.status(400).send("upload document failed")
 }
 
 }
@@ -31,14 +31,14 @@ export const viewfiles=(req,resp)=>{
         const doc=Document.find({user:req.user.id})
         if(!doc){
 
-         return   resp.status(400).json({message:"user id does not exist"})
+         return   resp.status(400).send("user id does not exist")
 }
 
    return  resp.status(200).json(doc)
 
     }catch(err){
 
-        return resp.status(400).json({message:"cannot view documents"})
+        return resp.status(400).send("cannot view documents")
     }
     }
 
@@ -47,12 +47,12 @@ try{
 const find=Document.find({_id:req.params.id,user:req.user.id});
 
 if(!find){
-return resp.status(400).json({message:"unable to find documents"})
+return resp.status(400).send("unable to find documents")
 
 }
 fs.unlink(path.resolve(req.filepath))
 await find.deleteOne();
-return resp.status(200).json({message:"deletation successfull"})
+return resp.status(200).send("deletation successfull")
 }catch(err){
 
 console.log(err)

@@ -29,7 +29,7 @@ router.post('/resetpage/:token',forgotpassword);
 router.get('/home',authentication,renderhome);
 
 
-router.post('/upload',authentication,uploaddocument);
+router.post('/upload',authentication,isAdmin,uploaddocument);
 router.get('/view',authentication,viewfiles)
 
 

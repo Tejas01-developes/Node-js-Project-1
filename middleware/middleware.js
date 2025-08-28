@@ -59,5 +59,13 @@ return resp.status(400).json({message:"invalid refresh token log in again"})
 
     }
 
+const isAdmin=(req,resp,next)=>{
+if(req.role !== "ADMIN"){
+    resp.status(400).send("only admin is allowed")
+}
+resp.status(200).send("Admin welcome")
+
+}
+next();
 }
 export default verifytoken;
