@@ -1,4 +1,4 @@
-import authentication from '../middleware/middleware.js';
+import auth from '../middleware/middleware.js';
 import dotenv from 'dotenv';
 import express from 'express';
 import  {  forgotpassword, login, logout, register, renderhome, renderlogin, renderregister, resetpage, resettoken } from '../controller/controller.js';
@@ -11,14 +11,17 @@ const router=express.Router();
 
 
 
-router.get('/register',renderregister);
+router.get('/',renderregister);
 router.post('/register',register);
 
 
-router.get('/',renderlogin);
+router.get('/login',renderlogin);
 router.post('/login',login);
 
-router.post('/logout',authentication,logout);
+
+router.get('/home',auth.verifytoken,renderhome);
+
+router.post('/logout',auth.verifytoken,logout);
 
 
 router.post('/forgot',resettoken)
@@ -26,13 +29,13 @@ router.post('/forgot',resettoken)
 router.get('/resetpage/:token',resetpage);
 router.post('/resetpage/:token',forgotpassword);
 
-router.get('/home',authentication,renderhome);
 
 
-router.post('/upload',authentication,uploaddocument);
-router.get('/view',authentication,viewfiles)
+
+router.post('/upload',auth.verifytoken,auth.isAdmin,uploaddocument);
+router.get('/view',auth.verifytoken,viewfiles)
 
 
-router.delete('/deletedoc/:id',authentication,deletedocuments)
+router.delete('/deletedoc/:id',auth.verifytoken,auth.isAdmin,deletedocuments)
 
 export default router;

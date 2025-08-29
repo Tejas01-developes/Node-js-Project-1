@@ -33,11 +33,12 @@ export const renderlogin=(req,resp)=>{
 
 
 
-export const register=async(req,resp)=>{
-try{
-const {username,email ,password}=req.body
 
-if(!username || !email || !password){
+export const register=async(req,resp)=>{
+
+const {username,email ,role,password}=req.body
+
+if(!username || !email || !password | !role){
 
     console.log("every filed should be filled compulsary")
 }
@@ -48,17 +49,18 @@ if(exist){
 }
 
 const hash=await bcrypt.hash(password,10);
-const createuser=await schema.create({username,email,password:hash});
-createuser.save();
-resp.redirect('/login')
+const createuser=await schema.create({username,email,role,password:hash});
+try{
+  
 
  await sendemails.sendmail(email,"welcome to our page be connected")
-
-
 }catch(err){
 
-    return resp.status(400).send("entire registration process failed");
+
+
 }
+  resp.redirect('/login');
+ return resp.status(200).send("registration succesfull")
 }
 
 
@@ -76,12 +78,12 @@ export const login=async(req,resp)=>{
         return   resp.status(400).send("provided credincials are not correct")
 
     }
-const accesstoken=json.sign({id:exist._id,role:exist.role},process.env.ACCESSSECRET,{expiresIn:"15m"});
-exist.access=accesstoken
+const accesstokens=json.sign({id:exist._id,role:exist.role},process.env.ACCESSSECRET,{expiresIn:"15m"});
+exist.accesstoken=accesstokens
 const refreshtoken=json.sign({id:exist._id,role:exist.role},process.env.REFRESHSECRET,{expiresIn:"7d"})
-exist.refreshtoken=refreshtoken;
+exist.refreshnewtoken=refreshtoken;
 
-resp.cookie("token",accesstoken,{
+resp.cookie("accesstoken",accesstokens,{
 httpOnly:true,
 secure:true,
 sameSite:"strict"
@@ -96,7 +98,9 @@ resp.cookie("refreshtoken",refreshtoken,{
 
 })
 
-return resp.status(200).send("login succesfull")
+
+return resp.redirect('/home')
+
 
 
     }catch(err){
@@ -114,12 +118,17 @@ return resp.status(200).send("login succesfull")
 
 export const logout=(req,resp)=>{
     try{
-resp.cookie("token"," ",{
+resp.cookie("accesstoken",{
     httpOnly:true,
     secure:true,
     sameSite:"strict" 
 })
- resp.status(200).json({message:"logout succesfull"})
+resp.cookie("refreshtoken",{
+    httpOnly:true,
+    secure:true,
+    sameSite:"strict" 
+})
+
 return resp.redirect('/login')
 
     }catch(err){
@@ -162,23 +171,6 @@ return resp.status(400).send("resent token generetion failed")
 
 
 
-// export const forgotpassword=async(req,resp)=>{
-//     try{
-// const {token}=req.params
-// const check=await schema.findOne({resettoken:token,tokenExpiry:{$gt:Date.now()}})
-// if(!check){
-// return resp.status(400).json({message:"token is not orignal"})
-// }
-// return resp.redirect('reset',token);
-
-
-// }catch(err){
-
-// console.log(err)
-// return resp.status(400).json({message:"reset failed"})
-
-// }
-// }
 
 export const resetpage=async(req,resp)=>{
     try{

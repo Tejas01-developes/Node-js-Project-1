@@ -14,7 +14,7 @@ const refreshtoken=req.cookies.refreshtoken;
     
 
     if(!accesstoken){
-     return   resp.status(400).json({message:"token is not avalible"})
+     return   resp.status(400).send("token is not avalible")
 
     }
     try{
@@ -55,23 +55,28 @@ return next();
 
     }catch(err){
 console.log("refresh token invalid",err);
- resp.status(400).json({message:"invalid refresh token log in again"})
+return resp.status(400).json({message:"invalid refresh token log in again"})
 
     }
-     const isAdmin=(req,resp,next)=>{
-        if(req.role !== "ADMIN"){
-            resp.status(400).send("only admin is allowed")
-        }
-        resp.status(200).send("Admin welcome")
-        next();
-        }
-      
-
-
-    
-
 }
-export default verifytoken;
+
+const isAdmin=(req,resp,next)=>{
+    if(req.role !== "ADMIN"){
+        resp.status(400).send("only admin is allowed")
+    }
+    resp.status(200).send("Admin welcome")
+    next();
+    }
+  
+
+
+
+
+
+
+
+
+export default {verifytoken,isAdmin};
 
 
 

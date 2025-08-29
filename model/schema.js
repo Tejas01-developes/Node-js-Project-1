@@ -10,6 +10,6 @@ password:{type:String,required:true},
 role:{type:String,required:true,enum:["USER","ADMIN"]},
 resettoken: { type: String }, 
 resetExpiry: { type: Date },
-refreshtoken:{type:String} 
+refreshnewtoken:{type:String} 
 },{timestamps:true})
 export default mongoose.model("adddocuments",schema);

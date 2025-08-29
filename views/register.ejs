@@ -12,6 +12,14 @@
       <input type="text" name="username" placeholder="Username" required>
       <input type="email" name="email" placeholder="Email" required>
       <input type="password" name="password" placeholder="Password" required>
+
+      <!-- Role Selection -->
+      <label for="role">Choose Role:</label>
+      <select name="role" id="role" required>
+        <option value="USER">User</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+
       <button type="submit">Register</button>
     </form>
     <p>Already have an account? <a href="/login">Login</a></p>
