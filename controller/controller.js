@@ -30,6 +30,13 @@ export const renderlogin=(req,resp)=>{
         
         }
 
+        
+    export const renderdelete=(req,resp)=>{
+
+        return resp.render('delete')
+         
+         }
+
 
 
 
@@ -60,7 +67,7 @@ try{
 
 }
   resp.redirect('/login');
- return resp.status(200).send("registration succesfull")
+
 }
 
 
@@ -118,9 +125,10 @@ return resp.redirect('/home')
 
 export const logout=(req,resp)=>{
     try{
-resp.cookie("accesstoken",{
+resp.cookie("accesstoken",null,{
     httpOnly:true,
     secure:true,
+    expiresIn:'0',
     sameSite:"strict" 
 })
 resp.cookie("refreshtoken",{
@@ -135,6 +143,25 @@ return resp.redirect('/login')
 return resp.status(400).json({message:"logout failed"})
 }
 }
+
+
+export const deleteuserinfo=async(req,resp)=>{
+    try{
+const{email}=req.body;
+const find=await schema.findOne({email});
+if(!find){
+    return resp.status(400).send("email is not registered")
+}
+
+await schema.deleteOne({email});
+return resp.redirect('/register');
+
+    }catch{
+        resp.status(400).send("can not delete user")
+    }
+}
+
+
 
 
 
@@ -218,7 +245,7 @@ if(!check){
     check.resettoken=undefined;
     check.tokenExpiry=undefined;
    await check.save();
-    resp.redirect("/login")
+   return resp.redirect("/login")
     }catch(err){
 console.log(err)
 return resp.status(400).send("forgot password failed")

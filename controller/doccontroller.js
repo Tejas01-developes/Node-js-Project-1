@@ -52,7 +52,7 @@ return resp.status(400).send("unable to find documents")
 }
 fs.unlink(path.resolve(req.filepath))
 await find.deleteOne();
-return resp.status(200).send("deletation successfull")
+return resp.redirect('/home')
 }catch(err){
 
 console.log(err)
