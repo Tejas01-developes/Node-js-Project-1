@@ -33,10 +33,16 @@ export const renderlogin=(req,resp)=>{
         
     export const renderdelete=(req,resp)=>{
 
-        return resp.render('delete')
+        return resp.render('deleteaccount')
          
          }
+         
+         export const renderreset=(req,resp)=>{
 
+            return resp.render('forgot')
+             
+             }
+         
 
 
 
@@ -154,7 +160,7 @@ if(!find){
 }
 
 await schema.deleteOne({email});
-return resp.redirect('/register');
+return resp.redirect('/');
 
     }catch{
         resp.status(400).send("can not delete user")
@@ -169,7 +175,7 @@ return resp.redirect('/register');
 
 
 export const resettoken=async(req,resp)=>{
-    try{
+  
 const {email}=req.body;
 
 const exist =await schema.findOne({email});
@@ -184,6 +190,7 @@ exist.resetExpiry=Date.now() + 3600000
  resp.redirect("/login")
 
 const resetlink=`http://${req.headers.host}/reset/${token}`;
+try{
 await sendemails.sendmail(email,`reset link has been sent to your email ${resetlink}` )
 }catch(err){
 console.log(err)
