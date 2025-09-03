@@ -31,6 +31,7 @@
     "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
     "randomuuid": "^1.0.1",
+    "util": "^0.12.5",
     "xss": "^1.0.15",
     "xss-clean": "^0.1.4",
     "xss-clean-types": "^1.0.2"

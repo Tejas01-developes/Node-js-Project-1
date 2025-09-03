@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import schema from '../model/schema.js';
 import dotenv from 'dotenv';
-import sendemails from '../email/email.js';
+import sendmail from '../email/email.js';
 import json from 'jsonwebtoken';
 import {randomUUID} from 'crypto';
 
@@ -37,11 +37,14 @@ export const renderlogin=(req,resp)=>{
          
          }
          
-         export const renderreset=(req,resp)=>{
+         export const renderforgot=(req,resp)=>{
 
             return resp.render('forgot')
              
              }
+
+
+        
          
 
 
@@ -66,7 +69,10 @@ const createuser=await schema.create({username,email,role,password:hash});
 try{
   
 
- await sendemails.sendmail(email,"welcome to our page be connected")
+ await sendmail(
+    email,
+    "registration succesfull",
+    "welcome to our page be connected")
 }catch(err){
 
 
@@ -174,7 +180,7 @@ return resp.redirect('/');
 
 
 
-export const resettoken=async(req,resp)=>{
+export const forgot=async(req,resp)=>{
   
 const {email}=req.body;
 
@@ -191,7 +197,10 @@ exist.resetExpiry=Date.now() + 3600000
 
 const resetlink=`http://${req.headers.host}/reset/${token}`;
 try{
-await sendemails.sendmail(email,`reset link has been sent to your email ${resetlink}` )
+ 
+await sendmail(email,
+    "reset page for password change",
+    `reset link has been sent to your email ${resetlink}` )
 }catch(err){
 console.log(err)
 return resp.status(400).send("resent token generetion failed") 
@@ -210,12 +219,13 @@ export const resetpage=async(req,resp)=>{
     try{
 const {token}=req.params;
 
-const user=await schema.findOne({resetExpiry:{$gt:Date.now()}});
+const user=await schema.findOne({resettoken:token,resetExpiry:{$gt:Date.now()}});
 
-if(!user || !bcrypt.compare(token, resettoken)){
+
+if(!user){
     return resp.status(400).send( "Invalid or expired token" );
 }
-resp.render('reset',{token});
+resp.render('/reset',{token});
 
 
 }catch (err) {

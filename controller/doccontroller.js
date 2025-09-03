@@ -5,19 +5,21 @@ import path from 'path'
 
 dotenv.config();
 
-export const uploaddocument=(req,resp)=>{
+export const uploaddocument=async(req,resp)=>{
 try{
-    if(!req.files){
+    if(!req.file){
         resp.status(400).send("no file uploaded")
     }
 
     const documents=new Document({
         user:req.user.id,
-        fileName:req.file.orignalname,
+        fileName:req.file.filename,
+        originalName:req.file.originalname,
         filePath:req.file.path
         })
 
-documents.save();
+await documents.save();
+return resp.redirect('/upload')
 }catch(err){
     console.log(err)
    return resp.status(400).send("upload document failed")

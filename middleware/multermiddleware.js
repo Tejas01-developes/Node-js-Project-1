@@ -9,7 +9,7 @@ dotenv.config();
 const storage=multer.diskStorage({
 destination:(req,file,cb)=>cb(null,'upload/'),
 filename:(req,file,cb)=>
-    cb(Date.now() + path.extname(file.originalname))
+    cb(null,Date.now() + '-' + file.originalname)
 })
 
 const filefilter=(req,file,cb)=>{
