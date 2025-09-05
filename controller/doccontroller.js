@@ -19,7 +19,7 @@ try{
         })
 
 await documents.save();
-return resp.redirect('/upload')
+return resp.redirect('/home')
 }catch(err){
     console.log(err)
    return resp.status(400).send("upload document failed")
@@ -52,7 +52,7 @@ if(!find){
 return resp.status(400).send("unable to find documents")
 
 }
-fs.unlink(path.resolve(req.filepath))
+fs.unlink(path.resolve(req.file.path))
 await find.deleteOne();
 return resp.redirect('/home')
 }catch(err){

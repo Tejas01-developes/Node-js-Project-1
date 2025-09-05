@@ -143,7 +143,7 @@ resp.cookie("accesstoken",null,{
     expiresIn:'0',
     sameSite:"strict" 
 })
-resp.cookie("refreshtoken",{
+resp.cookie("refreshtoken",null,{
     httpOnly:true,
     secure:true,
     sameSite:"strict" 
